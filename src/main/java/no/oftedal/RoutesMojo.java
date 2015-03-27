@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.reflections.Configuration;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -37,7 +38,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-@Mojo( name = "routes", defaultPhase = LifecyclePhase.NONE )
+
+@Mojo( name = "routes", defaultPhase = LifecyclePhase.NONE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
 public class RoutesMojo extends AbstractMojo
 {	
 
@@ -114,6 +116,14 @@ public class RoutesMojo extends AbstractMojo
 		    	Artifact a = (Artifact)o;
 		    	if (a.getFile() != null) urls.add(a.getFile().toURI().toURL());
 		    }
+		    for(Object o : project.getArtifacts()) {
+		    	Artifact a = (Artifact)o;
+		    	if (a.getFile() != null) urls.add(a.getFile().toURI().toURL());
+		    }
+		    for(Object o : project.getAttachedArtifacts()) {
+		    	Artifact a = (Artifact)o;
+		    	if (a.getFile() != null) urls.add(a.getFile().toURI().toURL());
+		    }
 		    
 		    ClassLoader contextClassLoader = URLClassLoader.newInstance(
 		            urls.toArray(new URL[0]),
@@ -124,7 +134,7 @@ public class RoutesMojo extends AbstractMojo
 		    	.setScanners(new MethodAnnotationsScanner(), new TypeAnnotationsScanner(), new SubTypesScanner());
 			config.setClassLoaders(new ClassLoader[] { contextClassLoader, this.getClass().getClassLoader() });
 	    	
-	    	Reflections reflections = new Reflections(config); 
+	    	Reflections reflections = new Reflections(config);
 	    	return reflections;
 		} catch(DependencyResolutionRequiredException | MalformedURLException e) {
 			throw new RuntimeException("Failed to load classes", e);
