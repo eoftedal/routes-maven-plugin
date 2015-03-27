@@ -112,7 +112,7 @@ public class RoutesMojo extends AbstractMojo
 		    }
 		    for(Object o : project.getDependencyArtifacts()) {
 		    	Artifact a = (Artifact)o;
-		    	urls.add(a.getFile().toURI().toURL());
+		    	if (a.getFile() != null) urls.add(a.getFile().toURI().toURL());
 		    }
 		    
 		    ClassLoader contextClassLoader = URLClassLoader.newInstance(
