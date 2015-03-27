@@ -57,6 +57,7 @@ public class RoutesMojo extends AbstractMojo
 			Reflections reflections = loadClasses();
 			
 	    	Set<Class<?>> resourceClasses = reflections.getTypesAnnotatedWith(Path.class);
+	    	
 	    	for ( Method m : reflections.getMethodsAnnotatedWith(Path.class)) {
 	    		resourceClasses.add(m.getDeclaringClass());
 	    	}
@@ -79,7 +80,7 @@ public class RoutesMojo extends AbstractMojo
 	        		if (m.isAnnotationPresent(DELETE.class)) verbs.add("DELETE");
 	        		if (m.isAnnotationPresent(OPTIONS.class)) verbs.add("OPTIONS");
 	        		if (m.isAnnotationPresent(HEAD.class)) verbs.add("HEAD");
-	        		if (verbs.isEmpty()) verbs.add("GET");
+	        		if (verbs.isEmpty()) continue;
 	    			for (String verb : verbs) {
 	    				routes.add(new Route(verb, methodPath, m));
 	    			}
@@ -124,7 +125,7 @@ public class RoutesMojo extends AbstractMojo
 		    	Artifact a = (Artifact)o;
 		    	if (a.getFile() != null) urls.add(a.getFile().toURI().toURL());
 		    }
-		    
+
 		    ClassLoader contextClassLoader = URLClassLoader.newInstance(
 		            urls.toArray(new URL[0]),
 		    		ClasspathHelper.contextClassLoader());
