@@ -1,7 +1,10 @@
 routes-maven-plugin
 -------------------
+Compile the plugin
 
-Add plugin to project:
+    mvn clean install
+
+Add plugin to the project you want:
 
 	<plugin>
 		<groupId>no.oftedal</groupId>
