@@ -71,7 +71,8 @@ public class RoutesMojo extends AbstractMojo
 	    			String methodPath = basePath;
 	        		if (m.isAnnotationPresent(Path.class)) {
 	        			String p = m.getAnnotation(Path.class).value();
-	        			methodPath += (methodPath.endsWith("/") && p.startsWith("/")) ? p.substring(1) : p;
+	        			if (p.startsWith("/")) p = p.substring(1);
+	        			methodPath += methodPath.endsWith("/") ? p : ("/" + p);
 	        		}
 	        		List<String> verbs = new ArrayList<String>();
 	        		if (m.isAnnotationPresent(GET.class)) verbs.add("GET");
